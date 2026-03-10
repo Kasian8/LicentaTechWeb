@@ -1,0 +1,56 @@
+:root{
+    /*Culori Principale*/
+    --primary: #d97706;
+    --primary-hover: #b45309;
+    --primary-opacity-10:rgba(217, 119, 6, 0.1);
+
+    /*Fundaluri*/
+    --background-dark-z900:#18181b;
+    --surf-background-z800:#222225;
+    --border-background-z700:#3f3f46;
+    --border-background-z700_10:#52525b;
+    --border-background-z700-10:#2d2d33;
+
+
+    /*Stare*/
+    --success-600: #059669;
+    --success-700: #047857;
+    --success-800: #065f46;
+
+    --success-600-op10: #0596691a; /* 10% opacitate */
+  
+
+
+    --error:#ef4444;
+    --error-10op10: #ef44441a;
+    --info: #3b82f6;
+    --blue-600-op10: #2563eb1a;
+    --blue-600-op20: #2563eb33;
+
+    /*text*/
+    --text-white: #ffffff;
+    --text-muted: #a1a1a1;
+
+    --font-main: sans-serif;
+
+    --important-text-size: 1.8rem;
+    --normal-text:1rem;
+    --subtitle-text-size:0.9rem;
+    --labels-text-size:0.7rem;
+
+    --font-weight:700;
+    --font-weight:800;
+    
+}   
+
+*{
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--background-dark-z900);
+    color: var(--text-white);
+    font-family: var(--font-main);
+}

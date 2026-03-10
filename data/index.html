@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control 5 Servos</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-hold { width: 45%; padding: 15px; margin: 5px; cursor: pointer; border: none; background: #2196F3; color: white; border-radius: 8px; }
+        .btn-click { width: 93%; padding: 12px; margin: 5px; cursor: pointer; border: none; background: #4CAF50; color: white; border-radius: 8px; }
+        .btn-hold:active { background: #1565C0; }
+        h3 { margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🏠 Control 5 Servomotoare</h1>
+    <div class="grid">
+        <script>
+            const servoNames = ["Ușă Garaj (P12)", "Poartă Curte (P13)", "Geam Sufragerie (P14)", "Dormitor (P27)", "Baie (P33)"];
+            
+            for(let i=1; i<=5; i++) {
+                document.write(`
+                    <div class="card">
+                        <h3>${servoNames[i-1]}</h3>
+                        <button class="btn-click" onclick="cmd('/s${i}/open')">🔓 Deschide 45°</button>
+                        <button class="btn-click" onclick="cmd('/s${i}/close')" style="background:#f44336">🔒 Închide 45°</button>
+                        <br>
+                        <button class="btn-hold" onmousedown="cmd('/s${i}/left')" onmouseup="cmd('/s${i}/stop')" 
+                                ontouchstart="cmd('/s${i}/left')" ontouchend="cmd('/s${i}/stop')">◀ Stânga</button>
+                        <button class="btn-hold" onmousedown="cmd('/s${i}/right')" onmouseup="cmd('/s${i}/stop')" 
+                                ontouchstart="cmd('/s${i}/right')" ontouchend="cmd('/s${i}/stop')">Dreapta ▶</button>
+                    </div>
+                `);
+            }
+            
+            function cmd(path) { fetch(path); }
+        </script>
+    </div>
+</body>
+</html>
