@@ -473,4 +473,44 @@ input:checked + .slider:before {
     font-weight: 600;
     margin-bottom: 20px;
 }
+
+
+.widows-control-cont{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--border-background-z700);
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--background-dark-z900);
+}
+
+.window-cont{
+    border: 1px solid var(--border-background-z700);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 49%;
+}
+.window-cont p {
+    font-size: var(--normal-text);
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.window-btns{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.window-cont button{
+    width: 49%;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border-background-z700);
+    background: var(--surf-background-z800);
+    color: var(--text-white);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
 /* End of bottom containers */
