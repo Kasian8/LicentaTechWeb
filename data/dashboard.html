@@ -172,25 +172,33 @@
 
                         <div class="main-door">
                             <div class="md-lb-status ">
-                                <p class="flex-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M10 12h.01"/><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/></svg>Main Door</p>
+                                <p class="flex-center"><span class="light-svg icon-box flex-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-closed"><path d="M10 12h.01"/><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/></svg></span>Main Door</p>
                                 <p class="status flex-center">Locked</p>
                             </div>
-                            <button class="unlock-lock-btn flex-center">Tap To Unlock</button>
+                            <div class="flex-between btn-container">
+                                <button class="unlock-lock-btn flex-center classic-btn">Tap To Unlock</button>
+                                <button class="unlock-lock-btn flex-center classic-btn">Open</button>
+                            </div>
+                            
+                        </div>
+
+                        <div class="garage-door">
+                            <button class="classic-btn"></button>
                         </div>
 
                         <div class="windows-control-cont flex-between">
                             <div class="window-cont">
                                 <p>Bedroom window</p>
-                                <div class="window-btns flex-between">
-                                    <button>OPEN</button>
-                                    <button>CLOSE</button>
+                                <div class="window-btns flex-between ">
+                                    <button class="classic-btn">OPEN</button>
+                                    <button class="classic-btn">CLOSE</button>
                                 </div>
                             </div>
                             <div class="window-cont">
                                 <p>Bathroom window</p>
-                                <div class="window-btns flex-between">
-                                    <button>OPEN</button>
-                                    <button>CLOSE</button>
+                                <div class="btn-container flex-between">
+                                    <button class="classic-btn">OPEN</button>
+                                    <button class="classic-btn">CLOSE</button>
                                 </div>
                             </div>
                         </div>

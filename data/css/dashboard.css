@@ -260,7 +260,7 @@ nav a:hover { background: var(--border-background-z700); }
 /* Light / heating row labels — composes .flex-center */
 .light-control p,
 .heating-control p {
-    
+    margin:1px
 }
 
 /* Heating icon — circular primary accent, mirrors .icon-circle */
@@ -397,9 +397,9 @@ input:checked + .slider:before { transform: translateX(26px); }
     background-color: var(--error-op10);
 }
 
-/* Full-width unlock button */
-.unlock-lock-btn {
-    width: 100%;
+
+.classic-btn{
+    width: 49%;
     height: 40px;
     border-radius: 20px;
     border: 1px solid var(--border-background-z700);
@@ -408,14 +408,13 @@ input:checked + .slider:before { transform: translateX(26px); }
     font-weight: 600;
     margin-bottom: 20px;
 }
-
-/* =============================================
-   WINDOWS CONTROL
-   ============================================= */
+.btn-container{
+    width: 100%;
+}
+/* Full-width unlock button */
 
 /* Outer wrapper — composes .flex-between */
 .windows-control-cont {
-
     border: 1px solid var(--border-background-z700);
     padding: 10px;
     border-radius: 10px;
@@ -428,6 +427,7 @@ input:checked + .slider:before { transform: translateX(26px); }
     display: flex;
     flex-direction: column;
     width: 49%;
+    border-radius: 10px;
 }
 .window-cont p {
     font-size: var(--normal-text);
@@ -435,17 +435,5 @@ input:checked + .slider:before { transform: translateX(26px); }
     margin-bottom: 10px;
 }
 
-/* Button row — composes .flex-between */
-.window-btns {
-    width: 100%;
-}
-.window-cont button {
-    width: 49%;
-    height: 40px;
-    border-radius: 20px;
-    border: 1px solid var(--border-background-z700);
-    background: var(--surf-background-z800);
-    color: var(--text-white);
-    font-weight: 600;
-    margin-bottom: 20px;
-}
+
+
