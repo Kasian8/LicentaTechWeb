@@ -21,6 +21,9 @@ WebServer server(80);
 
     const int GAS_PIN = 34;
 
+    const int PIR_SENSOR = 35;
+    unsigned long LAST_MOTION_TIME = 0;
+
 
 // int led-uri      
     const int LIVING_PIN = 2;
@@ -69,6 +72,9 @@ void setup() {
     dht.begin();
 
     analogReadResolution(12);
+
+    pinMode(PIR_SENSOR, INPUT);
+
 
 
     //init shifter
@@ -217,10 +223,24 @@ void setup() {
         server.send(200, "application/json", json);
     });
 
+    //motion
+    server.on("/sensor/motion", []() {
+        unsigned long timeElapsed = millis() - LAST_MOTION_TIME;
+        int seconds = timeElapsed / 1000;
+
+        String jason = "{\"motion\": " + String(seconds) + "}";
+        server.send(200, "application/json", jason);
+    });
+
 
     server.begin();
 }
 
 void loop() {
     server.handleClient();
+
+    if(digitalRead(PIR_SENSOR) == HIGH){
+        LAST_MOTION_TIME = millis();
+    }
+
 }

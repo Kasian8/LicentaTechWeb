@@ -196,13 +196,51 @@ function fetchGasData() {
         .catch(error => console.error('Eroare Gaz:', error));
 }
 
+function fetchMotionData() {
+    fetch('/sensor/motion')
+        .then(response => {
+            if (!response.ok) throw new Error('Eroare Motion');
+            return response.json();
+        })
+        .then(data => {
+            const motionTitle = document.getElementById('motion-title');
+            const motionTime = document.getElementById('motion-time');
+            
+            if (motionTitle && motionTime) {
+                let secs = data.motion; 
+
+                // Schimbă titlul doar cât timp e "Now" (primele 2 secunde)
+                if (secs < 2) {
+                    motionTitle.textContent = 'Motion Detected';
+                    motionTitle.style.color = 'inherit';
+                } else {
+                    motionTitle.textContent = 'No Motion';
+                    motionTitle.style.color = 'gray';
+                }
+
+                // Afișează secundele exacte pentru testare
+                if (secs < 2) {
+                    motionTime.textContent = "Now";
+                } else {
+                    motionTime.textContent = secs + " seconds ago";
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Eroare Motion:', error);
+        });
+}
+
 // Apelăm inițial ambele funcții
 fetchDHTData();
 fetchGasData();
+fetchMotionData();
+
 
 // Setăm timpii diferiți
 setInterval(fetchDHTData, 5000); // 5 secunde
 setInterval(fetchGasData, 2000); // 2 secunde
+setInterval(fetchMotionData, 2000); // 2 secunde
 
 
 function cmd(path) {
