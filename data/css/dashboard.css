@@ -223,9 +223,6 @@ nav a:hover { background: var(--border-background-z700); }
     margin-right: 5px;
 }
 
-/* Hall text accent in motion card */
-.hall { color: var(--primary); }
-
 /* =============================================
    BOTTOM CONTAINERS
    ============================================= */
@@ -367,7 +364,7 @@ input:checked + .slider:before { transform: translateX(26px); }
 /* =============================================
    MAIN DOOR
    ============================================= */
-.main-door {
+.main-door, .garage-door {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -433,6 +430,11 @@ input:checked + .slider:before { transform: translateX(26px); }
     font-size: var(--normal-text);
     color: var(--text-muted);
     margin-bottom: 10px;
+}
+
+
+.error-state{
+    color: var(--error);
 }
 
 
