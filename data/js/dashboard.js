@@ -1,6 +1,4 @@
 /**
- * dashboard.js — SmartHome Dashboard
- * Trimite comenzi HTTP GET către ESP32 pentru controlul servo-motorelor.
  *
  * Mapare servo → element UI:
  *   s1 (pin 12) → Bedroom Window(1/2 double window)
@@ -10,13 +8,7 @@
  *   s5 (pin 33) → Main Door 
  */
 
-// ─────────────────────────────────────────────
-//  HELPER — trimite comanda GET la ESP32
-// ─────────────────────────────────────────────
 
-// ─────────────────────────────────────────────
-//  GARAGE DOOR STATE
-// ─────────────────────────────────────────────
 
 
 const livingSlider = document.getElementById("living-intensity-slider"); //val input

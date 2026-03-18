@@ -69,13 +69,22 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
         if(!hasError){
-            if(userVal === "admin" && passwordVal === "1234"){
-                window.location.href = "/data/dashboard.html";
-            }
-            else{
-                passwordError.innerText = "ID or Password incorect"
-                passwordError.style.display = "block"
-            }
+            fetch('/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `username=${encodeURIComponent(userVal)}&password=${encodeURIComponent(passwordVal)}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = "/";
+                } else {
+                    passwordError.innerText = "ID sau Parolă incorectă";
+                    passwordError.style.display = "block";
+                    passwordInp.classList.add("input-error");
+                    userInp.classList.add("input-error");
+                }
+            })
+            .catch(error => console.error('Eroare conexiune:', error));
         }
     });
 });
