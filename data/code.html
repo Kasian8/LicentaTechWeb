@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smarthome Logs Page</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d97706", // Muted Amber (amber-600)
+                        "primary-hover": "#b45309", // Darker Amber for hover (amber-700)
+                        "background-light": "#f3f4f6", // gray-100
+                        "background-dark": "#18181b", // zinc-900 (Dark Grey)
+                        "surface-dark": "#27272a", // zinc-800
+                        "border-dark": "#3f3f46", // zinc-700
+                        "input-bg": "#27272a", // zinc-800
+                        "text-muted": "#a1a1aa", // zinc-400
+                        "success": "#10b981", // emerald-500
+                        "danger": "#ef4444", // red-500
+                        "info": "#3b82f6", // blue-500
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "full": "9999px"},
+                    backgroundImage: {
+                        'circuit-pattern': "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10 L30 10 L30 30 M50 50 L70 50 L70 70 M90 10 L90 30' stroke='%23d97706' stroke-width='1' fill='none' opacity='0.05'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%23d97706' opacity='0.05'/%3E%3Ccircle cx='70' cy='70' r='2' fill='%23d97706' opacity='0.05'/%3E%3C/svg%3E\")"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+        }
+        .bg-tech-grid {
+            background-image: 
+                linear-gradient(rgba(217, 119, 6, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(217, 119, 6, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }#report-modal-toggle:checked ~ #report-modal {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white min-h-screen flex flex-col">
+<div class="fixed inset-0 z-0 bg-background-dark bg-tech-grid pointer-events-none">
+<div class="absolute inset-0 bg-circuit-pattern opacity-30"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,transparent_0%,rgba(24,24,27,0.9)_100%)]"></div>
+</div>
+<nav class="fixed top-0 w-full z-50 bg-surface-dark/90 backdrop-blur-xl border-b border-border-dark h-16">
+<div class="max-w-[1600px] mx-auto px-6 h-full flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+</div>
+<span class="text-lg font-bold tracking-tight">SmartHome<span class="text-primary">Hub</span></span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-text-muted hover:text-white transition-colors py-5" href="#">Dashboard</a>
+<a class="text-sm font-medium text-text-muted hover:text-white transition-colors py-5" href="#">Settings</a>
+<a class="text-sm font-bold text-white border-b-2 border-primary py-5" href="#">Logs</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-dark border border-border-dark">
+<div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-mono text-text-muted uppercase">System Online</span>
+</div>
+<button class="p-2 text-text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="relative z-10 pt-24 pb-12 px-6 w-full max-w-[1400px] mx-auto flex-1 flex flex-col">
+<header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="text-3xl font-bold text-white mb-1">System Logs</h1>
+<p class="text-text-muted text-sm">Monitor system events, alerts, and user activities in real-time.</p>
+</div>
+<div class="flex gap-3">
+<button class="p-2 text-text-muted hover:text-white transition-colors bg-surface-dark border border-border-dark rounded-lg flex items-center gap-2 text-xs font-medium">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                Export CSV
+            </button>
+</div>
+</header>
+<section class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-surface-dark border border-border-dark text-xs font-bold text-white hover:bg-zinc-700 transition-colors shadow-sm">
+                All Events
+            </button>
+<button class="px-4 py-2 rounded-full bg-danger/10 border border-danger/20 text-xs font-bold text-danger hover:bg-danger/20 transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                Critical Alerts
+            </button>
+<button class="px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary hover:bg-primary/20 transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                Warnings
+            </button>
+<button class="px-4 py-2 rounded-full bg-info/10 border border-info/20 text-xs font-bold text-info hover:bg-info/20 transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">touch_app</span>
+                User Actions
+            </button>
+</div>
+<div class="relative min-w-[180px]">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted text-[18px]">calendar_today</span>
+<select class="w-full bg-surface-dark border border-border-dark rounded-lg py-2 pl-10 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary appearance-none cursor-pointer">
+<option>Last 24 Hours</option>
+<option>Last 7 Days</option>
+<option>Last 30 Days</option>
+<option>All Time</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-text-muted text-[18px] pointer-events-none">expand_more</span>
+</div>
+</section>
+<div class="flex-1 bg-surface-dark/80 backdrop-blur-xl border border-border-dark rounded-xl shadow-lg shadow-black/20 flex flex-col overflow-hidden">
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark bg-surface-dark text-xs font-medium text-text-muted uppercase tracking-wider">
+<div class="col-span-2">Time</div>
+<div class="col-span-1 text-center">Type</div>
+<div class="col-span-3">Source</div>
+<div class="col-span-6">Description</div>
+</div>
+<div class="overflow-y-auto custom-scrollbar h-[550px]">
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">10:42:15</span>
+<span class="text-xs text-text-muted">Today</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-danger/10 flex items-center justify-center text-danger border border-danger/20">
+<span class="material-symbols-outlined text-[18px]">error</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">Water Sensor - Kitchen</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Moisture detected. Automated shut-off valve activated.</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">09:15:22</span>
+<span class="text-xs text-text-muted">Today</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined text-[18px]">thermostat</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">DHT22 Sensor</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Temperature exceeded 35°C threshold (Current: 35.4°C).</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">08:30:00</span>
+<span class="text-xs text-text-muted">Today</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-info/10 flex items-center justify-center text-info border border-info/20">
+<span class="material-symbols-outlined text-[18px]">toggle_on</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">User: Admin</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Manually triggered "Morning Routine" scene.</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">08:28:45</span>
+<span class="text-xs text-text-muted">Today</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-info/10 flex items-center justify-center text-info border border-info/20">
+<span class="material-symbols-outlined text-[18px]">lock_open</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">Front Door Lock</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Unlocked via keypad (Code #2).</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">03:12:10</span>
+<span class="text-xs text-text-muted">Yesterday</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined text-[18px]">wifi_off</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">System</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">WiFi Signal Weak (-85dBm). Reconnecting...</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">23:45:00</span>
+<span class="text-xs text-text-muted">Yesterday</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-danger/10 flex items-center justify-center text-danger border border-danger/20">
+<span class="material-symbols-outlined text-[18px]">power_off</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">Main Power</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Power outage detected. UPS Backup engaged (Battery 98%).</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-6 py-4 border-b border-border-dark/50 items-center hover:bg-white/5 transition-colors group">
+<div class="col-span-2 flex flex-col">
+<span class="text-sm font-medium text-white">20:15:30</span>
+<span class="text-xs text-text-muted">Yesterday</span>
+</div>
+<div class="col-span-1 flex justify-center">
+<div class="w-8 h-8 rounded-full bg-info/10 flex items-center justify-center text-info border border-info/20">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</div>
+</div>
+<div class="col-span-3">
+<span class="text-sm font-bold text-white">User: Admin</span>
+</div>
+<div class="col-span-6">
+<span class="text-sm text-zinc-300">Updated system firmware to v3.2.1.</span>
+</div>
+</div>
+</div>
+<div class="px-6 py-3 bg-surface-dark border-t border-border-dark flex justify-between items-center text-xs text-text-muted">
+<span>Showing 7 of 142 events</span>
+<div class="flex gap-2">
+<button class="hover:text-white disabled:opacity-50" disabled="">Previous</button>
+<span class="w-[1px] h-3 bg-zinc-700"></span>
+<button class="hover:text-white">Next</button>
+</div>
+</div>
+</div>
+<section class="mt-6 flex justify-end">
+<input class="peer hidden" id="report-modal-toggle" type="checkbox"/>
+<label class="cursor-pointer group flex items-center gap-3 bg-gradient-to-r from-zinc-800 to-zinc-800 hover:from-primary/20 hover:to-zinc-800 border border-border-dark hover:border-primary/50 text-white pl-4 pr-6 py-3 rounded-xl shadow-lg transition-all active:scale-[0.98]" for="report-modal-toggle">
+<div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-700 group-hover:border-primary group-hover:text-primary flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined">bug_report</span>
+</div>
+<div class="flex flex-col items-start">
+<span class="text-xs text-text-muted uppercase font-bold tracking-wider">Support</span>
+<span class="font-bold text-sm">Raportează o Defecțiune Tehnică</span>
+</div>
+</label>
+<div class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm items-center justify-center p-4" id="report-modal">
+<div class="bg-surface-dark w-full max-w-lg rounded-2xl border border-border-dark shadow-2xl relative overflow-hidden flex flex-col">
+<div class="px-6 py-5 border-b border-border-dark bg-zinc-900/50 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">build_circle</span>
+<h3 class="text-lg font-bold text-white">Raportează o Defecțiune</h3>
+</div>
+<label class="text-text-muted hover:text-white cursor-pointer" for="report-modal-toggle">
+<span class="material-symbols-outlined">close</span>
+</label>
+</div>
+<div class="p-6 space-y-4">
+<p class="text-sm text-text-muted">
+                        Descrieți problema întâmpinată. Acest raport va fi trimis către serviciul de simulare tehnică.
+                    </p>
+<div class="space-y-2">
+<label class="text-xs font-bold text-white uppercase tracking-wider">Componentă Afectată</label>
+<select class="w-full bg-background-dark border border-border-dark rounded-lg py-2.5 px-3 text-sm text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+<option>Senzori (DHT22, Gaz, etc.)</option>
+<option>Conexiune Rețea / WiFi</option>
+<option>Automatizare / Relee</option>
+<option>Interfață Web</option>
+<option>Altul</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-white uppercase tracking-wider">Descriere Problemă</label>
+<textarea class="w-full bg-background-dark border border-border-dark rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder-zinc-600 resize-none" placeholder="Ex: Senzorul de temperatură nu răspunde de 10 minute..." rows="4"></textarea>
+</div>
+</div>
+<div class="px-6 py-4 bg-zinc-900/30 flex justify-end gap-3 border-t border-border-dark">
+<label class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-white hover:bg-white/5 cursor-pointer transition-colors" for="report-modal-toggle">
+                        Anulează
+                    </label>
+<button class="px-5 py-2 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">send</span>
+                        Trimite Raport
+                    </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+</body></html>

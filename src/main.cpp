@@ -4,18 +4,37 @@
 #include <WebServer.h>
 #include <ESP32Servo.h>
 #include <DHT.h>
+#include <Preferences.h>
 
-const char* ssid = "DIGI-qz5A";
-const char* password = "WsFtAN4t";
+// const char* ssid = "DIGI-qz5A";
+// const char* password = "WsFtAN4t";
 
+const char* ssid = "DIGI-fB6N";
+const char* password = "7HcKj45w";
+
+// Preferences biblioteca oficiala pentru Esp32 care gestioneaza memoria NVS
+Preferences preferences;
+
+String currentPassword = "1234";
+String currentPin = "0000"; // <-- Adăugat: Variabila globală pentru PIN
+String sessionID = "";
+
+// creare server web port 80
 WebServer server(80);
 
 const char* headerKeys[] = {"Cookie"};
 
+// functie verificare user autentificat
 bool is_authenticated() {
+    if (sessionID == "") {
+        return false;
+    }
+
     if (server.hasHeader("Cookie")) {
         String cookie = server.header("Cookie");
-        if (cookie.indexOf("ESPSESSIONID=1") != -1) {
+        String expectedCookie = "ESPSESSIONID=" + sessionID;
+
+        if (cookie.indexOf(expectedCookie) != -1) {
             return true;
         }
     }
@@ -76,6 +95,12 @@ void handleRoot() {
 
 void setup() {
     Serial.begin(115200);
+    randomSeed(micros());
+
+    // Initializare Preferences
+    preferences.begin("creditals", false);
+    currentPassword = preferences.getString("password", "1234");
+    currentPin = preferences.getString("pin", "0000"); // <-- Adăugat: Citire PIN salvat
 
     dht.begin();
 
@@ -116,25 +141,57 @@ void setup() {
 
     server.on("/", handleRoot);
     
+    // ==========================================
+    // RUTE PENTRU PAGINA DE LOGIN
+    // ==========================================
     server.on("/login", HTTP_GET, []() {
         File f = SPIFFS.open("/login.html", "r");
         if(f) { server.streamFile(f, "text/html"); f.close(); }
     });
 
     server.on("/auth", HTTP_POST, []() {
-        if (server.hasArg("username") && server.hasArg("password")) {
-            String user = server.arg("username");
-            String pass = server.arg("password");
+    if (server.hasArg("username") && server.hasArg("password")) {
+        String user = server.arg("username");
+        String pass = server.arg("password");
 
-            if (user == "admin" && pass == "1234") {
-                server.sendHeader("Set-Cookie", "ESPSESSIONID=1; Path=/; HttpOnly");
-                server.send(200, "text/plain", "OK");
-                return;
-            }
+        if (user == "admin" && pass == currentPassword) {
+            sessionID = String(random(100000, 999999));
+
+            String cookie = "ESPSESSIONID=" + sessionID + "; Path=/; HttpOnly; SameSite=Strict";
+            server.sendHeader("Set-Cookie", cookie);
+            server.send(200, "text/plain", "OK");
+            return;
         }
-        server.send(401, "text/plain", "Unauthorized");
+    }
+    server.send(401, "text/plain", "Unauthorized");
+});
+
+    // ==========================================
+    // RUTE PENTRU PAGINA DE SETĂRI (NOU)
+    // ==========================================
+    server.on("/settings.html", HTTP_GET, []() {
+        if (!is_authenticated()) {
+            server.sendHeader("Location", "/login");
+            server.send(303);
+            return;
+        }
+        File f = SPIFFS.open("/settings.html", "r");
+        if(f) { server.streamFile(f, "text/html"); f.close(); }
     });
 
+    server.on("/css/settings.css", []() {
+        File f = SPIFFS.open("/css/settings.css", "r");
+        if(f) { server.streamFile(f, "text/css"); f.close(); }
+    });
+
+    server.on("/js/settings.js", []() {
+        File f = SPIFFS.open("/js/settings.js", "r");
+        if(f) { server.streamFile(f, "application/javascript"); f.close(); }
+    });
+
+    // ==========================================
+    // RUTE PENTRU FIȘIERE GLOBALE ȘI DASHBOARD
+    // ==========================================
     server.on("/data/css/global.css", []() {
         File f = SPIFFS.open("/css/global.css", "r");
         if(f) { server.streamFile(f, "text/css"); f.close(); }
@@ -168,6 +225,18 @@ void setup() {
         if(f) { server.streamFile(f, "application/javascript"); f.close(); }
     });
 
+    server.on("/dashboard.html", HTTP_GET, []() {
+        if (!is_authenticated()) {
+            server.sendHeader("Location", "/login");
+            server.send(303);
+            return;
+        }
+        File f = SPIFFS.open("/dashboard.html", "r");
+        if(f) { server.streamFile(f, "text/html"); f.close(); }
+    });
+    // ==========================================
+    // RUTE COMUNICARE HARDWARE
+    // ==========================================
     server.on("/hallway/on", []() { currentState |= HALLWAY; updateShiftRegister(currentState); server.send(200); });
     server.on("/hallway/off", []() { currentState &= ~HALLWAY; updateShiftRegister(currentState); server.send(200); });
     
@@ -249,6 +318,56 @@ void setup() {
 
         String jason = "{\"motion\": " + String(seconds) + "}";
         server.send(200, "application/json", jason);
+    });
+
+
+    // ==========================================
+    // RUTE SCHIMBARE PAROLĂ ȘI PIN (NOU)
+    // ==========================================
+    server.on("/change-password", HTTP_POST, []() {
+        if (!is_authenticated()) { 
+            server.send(401, "text/plain", "Unauthorized"); 
+            return; 
+        }
+        
+        if (server.hasArg("current-password") && server.hasArg("new-password")) {
+            String currPass = server.arg("current-password");
+            String newPass = server.arg("new-password");
+
+            if (currPass == currentPassword) {
+                currentPassword = newPass;
+                preferences.putString("password", currentPassword);
+                server.send(200, "text/plain", "OK");
+                return;
+            } else {
+                server.send(403, "text/plain", "Forbidden: Wrong current password");
+                return;
+            }
+        }
+        server.send(400, "text/plain", "Bad Request");
+    });
+
+    server.on("/change-pin", HTTP_POST, []() {
+        if (!is_authenticated()) { 
+            server.send(401, "text/plain", "Unauthorized"); 
+            return; 
+        }
+        
+        if (server.hasArg("current-pin") && server.hasArg("new-pin")) {
+            String currPin = server.arg("current-pin");
+            String newPin = server.arg("new-pin");
+
+            if (currPin == currentPin) {
+                currentPin = newPin;
+                preferences.putString("pin", currentPin);
+                server.send(200, "text/plain", "OK");
+                return;
+            } else {
+                server.send(403, "text/plain", "Forbidden: Wrong current PIN");
+                return;
+            }
+        }
+        server.send(400, "text/plain", "Bad Request");
     });
 
     server.begin();

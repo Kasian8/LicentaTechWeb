@@ -54,3 +54,31 @@ body{
     color: var(--text-white);
     font-family: var(--font-main);
 }
+
+
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-column-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.input-error-info{
+    font-size: var(--labels-text-size);
+    color: var(--error);
+    margin-top: 10px;
+}
+

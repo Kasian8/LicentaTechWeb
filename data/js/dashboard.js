@@ -240,3 +240,5 @@ function cmd(path) {
         .then(response => console.log('Command sent:',path))
         .catch(error => console.error('Error sending command:', error));
 }
+
+

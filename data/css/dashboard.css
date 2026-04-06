@@ -1,24 +1,4 @@
 
-
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.flex-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.flex-column-between {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-
 .icon-circle {
     width: 45px;
     height: 45px;
@@ -103,6 +83,7 @@ nav a:hover { background: var(--border-background-z700); }
 /* =============================================
    MAIN CONTENT
    ============================================= */
+
 .main-content { padding: 20px; }
 
 /* Overview / refresh row — composes .flex-between */
